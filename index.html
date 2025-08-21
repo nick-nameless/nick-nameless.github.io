@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>mus(W)ikipedia: Songwriting Spark Tool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 2em auto;
+      max-width: 600px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #f0f0f5;
+      text-shadow: 0 0 8px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1em 1.5em 3em;
+    }
+    h2 {
+      color: #e0d7f9;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 2px;
+      margin-bottom: 1.2em;
+      text-shadow: 0 0 14px #d8b9ff;
+    }
+    form {
+      background: rgba(20,16,35,0.85);
+      border-radius: 16px;
+      padding: 20px 28px 30px;
+      box-shadow: 0 0 30px 4px rgba(202, 175, 255,0.55);
+      width: 100%;
+      max-width: 580px;
+      color: #ddd;
+    }
+    label {
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 8px;
+      color: #d9cbff;
+    }
+    input[type=text], textarea {
+      width: 100%;
+      font-size: 1.1rem;
+      color: #2c1947;
+      background: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      outline-offset: 3px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-shadow: inset 1px 2px 6px #a692ff;
+      resize: vertical;
+    }
+    input[type=text]#vibe,
+    input[type=text]#colorImg,
+    input[type=text]#object,
+    input[type=text]#lyricSeed {
+      min-height: 45px;
+      font-weight: 600;
+    }
+    textarea#lyricFeel {
+      min-height: 100px;
+      font-weight: 500;
+      font-style: italic;
+      color: #4a3678;
+    }
+    button {
+      margin: 16px 0 24px 0;
+      padding: 12px 28px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      background: #8f63ff;
+      color: white;
+      box-shadow: 0 0 25px #a389ff88;
+    }
+    button:hover, button:focus {
+      background-color: #ac8ffe;
+      box-shadow: 0 0 35px #bb9fffdd;
+      outline: none;
+    }
+    #instrument {
+      margin-top: 8px;
+      font-style: italic;
+      color: #d4caff;
+      min-height: 38px;
+      padding: 8px 12px;
+      background: rgba(75, 50, 180, 0.15);
+      border-radius: 8px;
+      box-shadow: inset 0 0 6px #a092ff88;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    #sectionVibes {
+      background: rgba(50, 20, 75, 0.75);
+      color: #eedfff;
+      border-radius: 14px;
+      padding: 16px 22px;
+      margin-top: 10px;
+      font-style: italic;
+      font-size: 1.05rem;
+      box-shadow: 0 0 20px #c3aaffcc;
+      max-width: 580px;
+      width: 100%;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+    #card {
+      background: rgba(22,10,42,0.85);
+      padding: 28px 30px;
+      border-radius: 20px;
+      margin-top: 32px;
+      box-shadow: 0 0 50px #b191ffe0;
+      color: #eee;
+      font-size: 1.15rem;
+      font-style: italic;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+      max-width: 580px;
+      width: 100%;
+      white-space: pre-wrap;
+      min-height: 150px;
+    }
+    .step {
+      margin-bottom: 24px;
+    }
+    a.wiki-link {
+      color: #cdaeff;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 0 5px #a389ffaa inset;
+      transition: color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    a.wiki-link:hover, a.wiki-link:focus {
+      color: #f3e8ff;
+      box-shadow: 0 0 18px #d3baffcc inset;
+      outline: none;
+    }
+    button.section-button {
+      background: #b28cff;
+      box-shadow: 0 0 30px #c2b0ffcc;
+      font-size: 0.95rem;
+      margin: 4px 6px 10px 0;
+      padding: 8px 16px;
+    }
+    button.section-button:hover, button.section-button:focus{
+      background: #d1b1fc;
+      box-shadow: 0 0 35px #e1cfffcc;
+      color: #280047;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>mus(W)ikipedia</h2>
+  <form id="songForm" autocomplete="off" spellcheck="false" aria-label="Songwriting Inspiration Generator">
+    <div class="step">
+      <label for="vibe">1. Share your vibe with one or two adjectives:</label>
+      <input type="text" id="vibe" name="vibe" placeholder="dreamy, restless, luminous..." required maxlength="40" />
+    </div>
+    <div class="step">
+      <label for="colorImg">2. A color or image in your mind right now:</label>
+      <input type="text" id="colorImg" name="colorImg" placeholder="teal, moonlight, thunderstorm, glass..." required maxlength="40" />
+    </div>
+    <div class="step">
+      <label for="shuffle">3. Shuffle your musical settings:</label><br />
+      <span id="genre"></span>,
+      <span id="tempo"></span>,
+      <span id="key"></span>,
+      <span id="sig"></span><br />
+      <button type="button" aria-label="Shuffle musical settings" onclick="rollSettings()">Shuffle</button>
+      <button type="button" aria-label="Try a new time signature" onclick="openTimeModal()" style="margin-left:10px;">Try a new time signature</button>
+    </div>
+    <div class="step">
+      <label for="object">4. Look around and name an object near you:</label>
+      <input type="text" id="object" name="object" placeholder="desk lamp, coffee, window..." />
+      <button type="button" aria-label="Suggest instrument" onclick="suggestInstrument()">Suggest instrument</button>
+      <div id="instrument"></div>
+    </div>
+    
+    <div class="step" aria-live="polite">
+      <label>5. Song Section Vibes: (click a section to get vibe suggestion)</label><br/>
+      <button type="button" class="section-button" onclick="showSectionVibe('Verse')">Verse</button>
+      <button type="button" class="section-button" onclick="showSectionVibe('Chorus')">Chorus</button>
+      <button type="button" class="section-button" onclick="showSectionVibe('Bridge')">Bridge</button>
+      <button type="button" class="section-button" onclick="showSectionVibe('Outro')">Outro</button>
+      <div id="sectionVibes" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
+    <div class="step">
+      <label for="lyricSeed">6. Lyric spark:
+        <a
+          class="wiki-link"
+          href="https://en.wikipedia.org/wiki/Special:Random"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open a random Wikipedia page in a new tab"
+          >Explore a random Wikipedia page</a>
+      </label>
+      <input type="text" id="lyricSeed" name="lyricSeed" placeholder="Paste an intriguing word, phrase, or image here..." maxlength="60" />
+      <label for="lyricFeel">In ten words, how does this inspire you?</label>
+      <textarea id="lyricFeel" name="lyricFeel" placeholder="Ten-word feeling, abstract or direct..." maxlength="250"></textarea>
+    </div>
+    <button type="submit" aria-label="Generate your inspiring song seed card">Show My Song Seed Card!</button>
+  </form>
+
+  <div id="card" style="display:none;" role="region" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Modal for time signature selection -->
+  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1" style="display:none; align-items:center; justify-content:center; position:fixed;top:0;left:0;width:100%;height:100%;background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index:9999;">
+    <div id="modalContent" style="background:#311b92; border-radius:16px; padding:24px 32px; box-shadow: 0 0 40px #a17affdd; max-width:400px; width:90%; color:#ddd; text-align:center;">
+      <h3 id="modalTitle" style="margin-top:0; margin-bottom:16px; color:#d1c4e9;">Choose a New Time Signature</h3>
+      <select id="timeSelect" aria-label="Select a new time signature for your song" style="width:100%; padding:10px 14px; font-size:1.1rem; border-radius:8px; border:none; box-shadow: inset 1px 2px 6px #b09aff; margin-bottom: 20px; background:#5e35b1; color:#eee; cursor:pointer;">
+        <!-- populated by JS -->
+      </select>
+      <div id="modalButtons" style="display:flex; justify-content:space-around;">
+        <button id="modalCancelBtn" type="button" style="flex:1; margin:0 8px; padding:10px 0; font-weight:700; font-size:1rem; border-radius:9999px; border:none; cursor:pointer; transition:background-color 0.3s ease; background:#784aff; color:white; box-shadow: 0 0 20px #937affaa;">Cancel</button>
+        <button id="modalSelectBtn" type="button" style="flex:1; margin:0 8px; padding:10px 0; font-weight:700; font-size:1rem; border-radius:9999px; border:none; cursor:pointer; transition:background-color 0.3s ease; background:#784aff; color:white; box-shadow: 0 0 20px #937affaa;">Select</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const genres = [
+      "Indie Rock", "Synth-pop", "Afrobeat", "Dream Pop",
+      "Jazz Fusion", "Alt Country", "Punk", "Folk", "Trip-Hop"
+    ];
+    const tempos = [
+      "Slow & spacey", "Groovy & midtempo", "Blitz-fast & energetic"
+    ];
+    const keys = [
+      "C Major", "G Major", "D Major", "A Major", "E Major", "B Major", "F# Major", "C# Major",
+      "A Minor", "E Minor", "D Minor", "B Minor", "F# Minor", "C# Minor", "G# Minor", "D# Minor"
+    ];
+    const timesigs = [
+      "4/4", "3/4", "5/4", "7/8", "6/8", "9/8",
+      "2/4", "12/8", "5/8", "11/8", "13/8", "15/8", "3/8", "7/4", "9/4", "21/8", "25/8"
+    ];
+    const objectInstruments = {
+      lamp: ["vibraphone", "synth pad"],
+      coffee: ["upright bass", "percussion"],
+      window: ["glass harmonica", "airy synth"],
+      phone: ["electronic sample", "radio voice"],
+      tree: ["classical guitar", "wood block"],
+    };
+    const sectionVibeSuggestions = {
+      "Verse": [
+        "A reflective and intimate mood with subtle textures.",
+        "A grounded and steady flow with emotional depth.",
+        "Soft harmonies weaving a story's beginnings."
+      ],
+      "Chorus": [
+        "Energetic and uplifting with soaring hooks.",
+        "A catchy, rhythmic burst of passion.",
+        "Bold melodies that invite singing along."
+      ],
+      "Bridge": [
+        "An unexpected twist, adding tension and release.",
+        "Contrasting textures for emotional contrast.",
+        "Experimental sounds, pushing boundaries."
+      ],
+      "Outro": [
+        "A gentle wind-down, fading with warmth.",
+        "Lingering notes that echo the song’s essence.",
+        "Calm and spacious, leaving the listener contemplative."
+      ]
+    };
+
+    function randomItem(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    // Shuffle settings
+    function rollSettings() {
+      document.getElementById('genre').innerText = randomItem(genres);
+      document.getElementById('tempo').innerText = randomItem(tempos);
+      document.getElementById('key').innerText = randomItem(keys);
+      document.getElementById('sig').innerText = randomItem(timesigs);
+    }
+
+    // Suggest instrument
+    function suggestInstrument() {
+      const obj = document.getElementById('object').value.trim().toLowerCase();
+      let result = "Suggested instrument: ";
+      for (let key in objectInstruments) {
+        if (obj.includes(key)) {
+          result += randomItem(objectInstruments[key]);
+          document.getElementById('instrument').innerText = result;
+          return;
+        }
+      }
+      const fallback = ["synth", "banjo", "harmonium", "ambient field recording", "kalimba", "sampled voice"];
+      result += randomItem(fallback);
+      document.getElementById('instrument').innerText = result;
+    }
+
+    // Modal management
+    const modalOverlay = document.getElementById('modalOverlay');
+    const timeSelect = document.getElementById('timeSelect');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const modalSelectBtn = document.getElementById('modalSelectBtn');
+
+    function openTimeModal() {
+      timeSelect.innerHTML = '';
+      timesigs.forEach(ts => {
+        const opt = document.createElement('option');
+        opt.value = ts;
+        opt.innerText = ts;
+        timeSelect.appendChild(opt);
+      });
+      modalOverlay.style.display = 'flex';
+      timeSelect.focus();
+    }
+    function closeTimeModal() {
+      modalOverlay.style.display = 'none';
+    }
+    modalCancelBtn.addEventListener('click', closeTimeModal);
+    modalSelectBtn.addEventListener('click', () => {
+      const selectedTS = timeSelect.value;
+      document.getElementById('sig').innerText = selectedTS;
+      closeTimeModal();
+    });
+    modalOverlay.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeTimeModal();
+    });
+
+    // Section vibe suggestion
+    function showSectionVibe(section) {
+      const suggestions = sectionVibeSuggestions[section];
+      if(!suggestions) return;
+      const vibe = randomItem(suggestions);
+      const display = document.getElementById('sectionVibes');
+      display.innerText = `${section} vibe suggestion:\n\n${vibe}`;
+    }
+
+    // Output inspiring text with refined time signature phrasing
+    function inspireFromInput(label, text) {
+      if (!text) return "";
+      if(label === 'time'){
+        const simpleTimes = ['4/4', '3/4', '6/8'];
+        if(simpleTimes.includes(text)){
+          return `Time signature set to ${text}.`;
+        } else {
+          return `An unconventional beat signature of ${text}, inviting rhythmic intrigue.`;
+        }
+      }
+      switch(label) {
+        case 'vibe':
+          return `A mood drifting in ${text}, painting sonic textures of your mind.`;
+        case 'visual':
+          return `Visual hues like ${text} shimmer in your creative space.`;
+        case 'genre':
+          return `A soundtrack styled as ${text}, inviting fresh musical paths.`;
+        case 'tempo':
+          return `Rhythms unfolding ${text.toLowerCase()}, flowing naturally.`;
+        case 'key':
+          return `Harmonic colors centered in ${text}, shaping the melody.`;
+        case 'object':
+          return `Inspired from the presence of ${text}, channeling its soul through sound.`;
+        case 'instrument':
+          return `Expressed through ${text.replace('Suggested instrument: ', '')}, the voice of your muse.`;
+        case 'lyricSeed':
+          return `A lyrical seed sprung from "${text}", ready to blossom.`;
+        case 'lyricFeel':
+          return `Emotions distilled as: "${text}" — your poetic compass.`;
+        default:
+          return text;
+      }
+    }
+
+    document.getElementById('songForm').onsubmit = function(e) {
+      e.preventDefault();
+
+      const vibeInput = document.getElementById('vibe').value.trim();
+      const visualInput = document.getElementById('colorImg').value.trim();
+      const genreInput = document.getElementById('genre').innerText;
+      const tempoInput = document.getElementById('tempo').innerText;
+      const keyInput = document.getElementById('key').innerText;
+      const sigInput = document.getElementById('sig').innerText;
+      const objectInput = document.getElementById('object').value.trim();
+      const instrumentText = document.getElementById('instrument').innerText;
+      const lyricSeedInput = document.getElementById('lyricSeed').value.trim();
+      const lyricFeelInput = document.getElementById('lyricFeel').value.trim();
+
+      let cardText = "";
+      cardText += inspireFromInput('vibe', vibeInput) + "\n\n";
+      cardText += inspireFromInput('visual', visualInput) + "\n\n";
+      cardText += inspireFromInput('genre', genreInput) + "\n";
+      cardText += inspireFromInput('tempo', tempoInput) + "\n";
+      cardText += inspireFromInput('key', keyInput) + "\n";
+      cardText += inspireFromInput('time', sigInput) + "\n\n";
+      if(objectInput)
+        cardText += inspireFromInput('object', objectInput) + "\n";
+      if(instrumentText)
+        cardText += inspireFromInput('instrument', instrumentText) + "\n\n";
+      if(lyricSeedInput)
+        cardText += inspireFromInput('lyricSeed', lyricSeedInput) + "\n";
+      if(lyricFeelInput)
+        cardText += inspireFromInput('lyricFeel', lyricFeelInput) + "\n";
+
+      const cardDiv = document.getElementById('card');
+      cardDiv.style.display = "";
+      cardDiv.innerText = cardText.trim();
+
+      window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+    };
+  </script>
+</body>
+</html>
